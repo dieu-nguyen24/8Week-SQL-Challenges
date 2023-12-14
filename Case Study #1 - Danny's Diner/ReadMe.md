@@ -1,3 +1,12 @@
+## The Problem
+Information about the case study can be found at: https://8weeksqlchallenge.com/case-study-1/
+
+In summary, Danny needs help with understanding his customers better in terms of visiting patterns, spending patterns, and preferences. His plan is to use these insights to decide if expanding the existing loyalty program is the right choice or not.
+
+***
+## Entity Relationship Diagram
+
+***
 ## Schema SQL
 Database: MySQL v8.0
 ```sql
@@ -67,13 +76,13 @@ INNER JOIN dannys_diner.menu m
 GROUP BY customer_id;
 ```
 #### Output:
-The total amount of money spent by each customer is:
 | customer_id | total_amount_spent |
 |-------------|---------------------|
 | A           | 76                  |
 | B           | 74                  |
 | C           | 36                  |
 
+A spent 76$, B spent 74$ and C spent 36$.
 #### Explanation:
 `sales` table (alias `s`) is joined with `menu` (alias `m`) table via `product_id` key since we need the according product prices from the `sales` table. `customer_id`s are returned and `price`s of all order instances are summed up and aggregated by the customers.
 
@@ -113,6 +122,15 @@ SELECT customer_id, product_name
 FROM sq
 WHERE rank_date = 1;
 ```
+#### Output:
+| customer_id | product_name |
+| ----------- | ------------ |
+| A           | sushi        |
+| A           | curry        |
+| B           | curry        |
+| C           | ramen        |
+
+For customer A, their first items purchased were sushi and curry on the same day. Customer B's first dish was curry and C's was ramen.
 
 ***
 ## Question 4
@@ -127,6 +145,12 @@ GROUP BY product_name
 ORDER BY times_purchased DESC
 LIMIT 1;
 ```
+#### Output:
+| product_name | times_purchased |
+| ------------ | --------------- |
+| ramen        | 8               |
+
+The most purchased item is ramen, which was purchased 8 times by all customers.
 
 ***
 ## Question 5
