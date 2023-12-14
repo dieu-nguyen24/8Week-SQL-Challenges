@@ -17,8 +17,10 @@ The total amount of money spent by each customer is:
 | C           | 36                  |
 
 #### Explanation:
-`sales` table is joined with `menu` table via `product_id` key since we need the price of each product
+`sales` table (alias `s`) is joined with `menu` (alias `m`) table via `product_id` key since we need the according product prices from the `sales` table. `customer_id`s are returned and product `prices` are summed up. Results are aggregated by the customers.
+
 ***
+
 ## Question 2
 ### How many days has each customer visited the restaurant?
 #### Answer:
