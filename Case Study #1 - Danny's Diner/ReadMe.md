@@ -69,7 +69,7 @@ VALUES
 ### What is the total amount each customer spent at the restaurant?
 #### Answer:
 ```sql
-SELECT s.customer_id, SUM(m.price) as total_amount_spent
+SELECT s.customer_id, SUM(m.price) AS total_amount_spent
 FROM dannys_diner.sales s
 INNER JOIN dannys_diner.menu m
 	ON s.product_id=m.product_id
@@ -91,7 +91,7 @@ A spent 76$, B spent 74$ and C spent 36$.
 ### How many days has each customer visited the restaurant?
 #### Answer:
 ```sql
-SELECT customer_id, COUNT(DISTINCT order_date) as num_days_visited
+SELECT customer_id, COUNT(DISTINCT order_date) AS num_days_visited
 FROM dannys_diner.sales
 GROUP BY customer_id;
 ```
@@ -137,7 +137,7 @@ For customer A, their first items purchased were sushi and curry on the same day
 ### What is the most purchased item on the menu and how many times was it purchased by all customers?
 #### Answer:
 ```sql
-SELECT product_name, COUNT(*) as times_purchased
+SELECT product_name, COUNT(*) AS times_purchased
 FROM dannys_diner.menu m
 INNER JOIN dannys_diner.sales s
 	ON m.product_id=s.product_id
