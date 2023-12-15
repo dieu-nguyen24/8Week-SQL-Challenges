@@ -157,14 +157,15 @@ The most purchased item is ramen, which was purchased 8 times by all customers.
 ### Which item was the most popular for each customer?
 #### Answer:
 ```sql
-WITH t AS (SELECT s.customer_id, 
-		m.product_name,
-		COUNT(*) AS times_ordered,
-		RANK() OVER (PARTITION BY s.customer_id ORDER BY COUNT(*) DESC) AS rnk
-            FROM dannys_diner.sales s
-            INNER JOIN dannys_diner.menu m
-                    ON s.product_id=m.product_id
-            GROUP BY s.customer_id, m.product_name)
+WITH t AS 
+        (SELECT s.customer_id, 
+                m.product_name,
+                COUNT(*) AS times_ordered,
+                RANK() OVER (PARTITION BY s.customer_id ORDER BY COUNT(*) DESC) AS rnk
+        FROM dannys_diner.sales s
+        INNER JOIN dannys_diner.menu m
+        		ON s.product_id=m.product_id
+        GROUP BY s.customer_id, m.product_name)
 
 SELECT customer_id, product_name, times_ordered
 FROM t
@@ -183,11 +184,52 @@ WHERE rnk = 1;
 ## Question 6
 ### Which item was purchased first by the customer after they became a member?
 #### Answer:
+```sql
+WITH t AS 
+      (SELECT s.customer_id, 
+       			s.order_date, 
+       			me.product_name,
+       			m.join_date,
+       			RANK() OVER (PARTITION BY customer_id ORDER BY order_date) AS rnk
+      FROM dannys_diner.sales s
+      INNER JOIN dannys_diner.members m
+              ON s.customer_id=m.customer_id
+              AND s.order_date > m.join_date
+      INNER JOIN dannys_diner.menu me
+              ON s.product_id=me.product_id)
+        
+SELECT customer_id, product_name, join_date, order_date
+FROM t
+WHERE rnk = 1;
+```
+#### Output:
+| customer_id | product_name | join_date  | order_date |
+| ----------- | ------------ | ---------- | ---------- |
+| A           | ramen        | 2021-01-07 | 2021-01-10 |
+| B           | sushi        | 2021-01-09 | 2021-01-11 |
 
 ***
 ## Question 7
 ### Which item was purchased just before the customer became a member?
 #### Answer:
+```sql
+WITH t AS 
+      (SELECT s.customer_id, 
+       			s.order_date, 
+       			me.product_name,
+       			m.join_date,
+       			RANK() OVER (PARTITION BY customer_id ORDER BY order_date DESC) AS rnk
+      FROM dannys_diner.sales s
+      INNER JOIN dannys_diner.members m
+              ON s.customer_id=m.customer_id
+              AND s.order_date < m.join_date
+      INNER JOIN dannys_diner.menu me
+              ON s.product_id=me.product_id)
+        
+SELECT customer_id, product_name, join_date, order_date
+FROM t
+WHERE rnk = 1;
+```
 
 ***
 ## Question 8
