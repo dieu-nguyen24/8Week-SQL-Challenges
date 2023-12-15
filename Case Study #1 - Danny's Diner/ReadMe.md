@@ -1,5 +1,5 @@
 ## The Problem
-Information about the case study can be found at: https://8weeksqlchallenge.com/case-study-1/
+The full information about the case study can be found at: [Link](https://8weeksqlchallenge.com/case-study-1/)
 
 In summary, Danny needs help with understanding his customers better in terms of visiting patterns, spending patterns, and preferences. His plan is to use these insights to decide if expanding the existing loyalty program is the right choice or not.
 
@@ -8,9 +8,9 @@ In summary, Danny needs help with understanding his customers better in terms of
 
 ***
 ## Schema SQL
-Database: MySQL v8.0
+You can execute the queries using MySQL on [DB Fiddle](https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138) by changing the Database to MySQL v8.0 and replacing the existing Schema with the following code:
 ```sql
-CREATE DATABASE dannys_diner;
+CREATE DATABASE IF NOT EXISTS dannys_diner;
 
 USE dannys_diner;
 
@@ -156,6 +156,28 @@ The most purchased item is ramen, which was purchased 8 times by all customers.
 ## Question 5
 ### Which item was the most popular for each customer?
 #### Answer:
+```sql
+WITH t AS (SELECT s.customer_id, 
+		m.product_name,
+		COUNT(*) AS times_ordered,
+		RANK() OVER (PARTITION BY s.customer_id ORDER BY COUNT(*) DESC) AS rnk
+            FROM dannys_diner.sales s
+            INNER JOIN dannys_diner.menu m
+                    ON s.product_id=m.product_id
+            GROUP BY s.customer_id, m.product_name)
+
+SELECT customer_id, product_name, times_ordered
+FROM t
+WHERE rnk = 1;
+```
+#### Output:
+| customer_id | product_name | times_ordered |
+| ----------- | ------------ | ------------- |
+| A           | ramen        | 3             |
+| B           | curry        | 2             |
+| B           | sushi        | 2             |
+| B           | ramen        | 2             |
+| C           | ramen        | 3             |
 
 ***
 ## Question 6
