@@ -230,16 +230,53 @@ SELECT customer_id, product_name, join_date, order_date
 FROM t
 WHERE rnk = 1;
 ```
+#### Output:
+| customer_id | product_name | join_date  | order_date |
+| ----------- | ------------ | ---------- | ---------- |
+| A           | sushi        | 2021-01-07 | 2021-01-01 |
+| A           | curry        | 2021-01-07 | 2021-01-01 |
+| B           | sushi        | 2021-01-09 | 2021-01-04 |
 
 ***
 ## Question 8
 ### What is the total items and amount spent for each member before they became a member?
 #### Answer:
+```sql
+SELECT s.customer_id, COUNT(me.product_name) AS total_items, SUM(me.price) AS amount_spent
+FROM dannys_diner.sales s
+INNER JOIN dannys_diner.members m
+		ON s.customer_id=m.customer_id AND s.order_date < m.join_date
+INNER JOIN dannys_diner.menu me
+		ON s.product_id=me.product_id
+GROUP BY s.customer_id
+ORDER BY s.customer_id;
+```
+#### Output:
+| customer_id | total_items | amount_spent |
+| ----------- | ----------- | ------------ |
+| A           | 2           | 25           |
+| B           | 3           | 40           |
 
 ***
 ## Question 9
 ### If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 #### Answer:
+```sql
+SELECT s.customer_id, 
+	SUM(CASE 
+		WHEN me.product_name = "sushi" THEN 20*me.price 
+		ELSE 10*me.price END) AS points
+FROM dannys_diner.sales s
+INNER JOIN dannys_diner.menu me
+		ON s.product_id=me.product_id
+GROUP BY s.customer_id;
+```
+#### Output:
+| customer_id | points |
+| ----------- | ------ |
+| A           | 860    |
+| B           | 940    |
+| C           | 360    |
 
 ***
 ## Question 10
