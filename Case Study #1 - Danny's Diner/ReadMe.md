@@ -280,6 +280,28 @@ GROUP BY s.customer_id;
 
 ***
 ## Question 10
-### In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+### In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customers A and B have at the end of January?
 #### Answer:
+```sql
+SELECT s.customer_id, 
+	SUM(CASE 
+		WHEN (me.product_name = "sushi" OR (s.order_date BETWEEN m.join_date AND m.join_date+6)) THEN 20*me.price
+		ELSE 10*me.price END) AS points
+FROM dannys_diner.sales s
+INNER JOIN dannys_diner.members m
+	ON s.customer_id=m.customer_id
+INNER JOIN dannys_diner.menu me
+	ON s.product_id=me.product_id
+WHERE MONTH(s.order_date) < 2
+GROUP BY s.customer_id
+ORDER BY s.customer_id;
+```
+#### Output:
+| customer_id | points |
+| ----------- | ------ |
+| A           | 1370   |
+| B           | 820    |
+
+***
+## Bonus Questions
 
