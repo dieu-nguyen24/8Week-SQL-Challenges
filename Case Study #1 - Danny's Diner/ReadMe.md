@@ -5,10 +5,10 @@ In summary, Danny needs help with understanding his customers better in terms of
 
 ***
 ## Entity Relationship Diagram
-
+![image](https://private-user-images.githubusercontent.com/60505826/291169578-9d7777c3-4c23-45b2-94d4-adb0ee693dde.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDI4ODEwMDgsIm5iZiI6MTcwMjg4MDcwOCwicGF0aCI6Ii82MDUwNTgyNi8yOTExNjk1NzgtOWQ3Nzc3YzMtNGMyMy00NWIyLTk0ZDQtYWRiMGVlNjkzZGRlLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFJV05KWUFYNENTVkVINTNBJTJGMjAyMzEyMTglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjMxMjE4VDA2MjUwOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWZlMGNiNzRhMTgyOGUzNGU5MWEwOWE1ZWU2MGI3MzNmM2E2MmY2YmMyNzM4MWM0NDI2NjU2MjQxZTZiY2QzZGQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.bEKY_jmPXOcdaunXRiciPPcbktrvClbWuuKe8r2IVJM)
 ***
 ## Schema SQL
-You can execute the queries using MySQL on [DB Fiddle](https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138) by changing the Database to MySQL v8.0 and replacing the existing Schema with the following code:
+You can execute the queries using MySQL on [DB Fiddle](https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138) by changing the Database to MySQL v8.0 and replacing the existing Schema with the following:
 ```sql
 CREATE DATABASE IF NOT EXISTS dannys_diner;
 
@@ -83,8 +83,6 @@ GROUP BY customer_id;
 | C           | 36                  |
 
 A spent 76$, B spent 74$ and C spent 36$.
-#### Explanation:
-`sales` table (alias `s`) is joined with `menu` (alias `m`) table via `product_id` key since we need the according product prices from the `sales` table. `customer_id`s are returned and `price`s of all order instances are summed up and aggregated by the customers.
 
 ***
 ## Question 2
@@ -102,6 +100,8 @@ The number of days each customer visited the restaurant:
 | A           | 4                |
 | B           | 6                |
 | C           | 2                |
+
+A visited the restaurants 4 times, while B and C visited 6 and 2 times respectively.
 
 ***
 ## Question 3
@@ -180,6 +180,8 @@ WHERE rnk = 1;
 | B           | ramen        | 2             |
 | C           | ramen        | 3             |
 
+Based on the highest times ordered, the most popular item for both A and C was ramen. B, however, seems to like curry, sushi, and ramen equally.
+
 ***
 ## Question 6
 ### Which item was purchased first by the customer after they became a member?
@@ -208,6 +210,8 @@ WHERE rnk = 1;
 | A           | ramen        | 2021-01-07 | 2021-01-10 |
 | B           | sushi        | 2021-01-09 | 2021-01-11 |
 
+After becoming a member on 7/1/2021, the first item purchased by A was ramen, on 10/1/2021.
+After becoming a member on 9/1/2021, the first item purchased by B was sushi, on 11/1/2021.
 ***
 ## Question 7
 ### Which item was purchased just before the customer became a member?
@@ -237,9 +241,11 @@ WHERE rnk = 1;
 | A           | curry        | 2021-01-07 | 2021-01-01 |
 | B           | sushi        | 2021-01-09 | 2021-01-04 |
 
+Just before becoming members, A purchased sushi and curry on the same day (1/1/2021), while B purchased sushi on 4/1/2021.
+
 ***
 ## Question 8
-### What is the total items and amount spent for each member before they became a member?
+### What are the total items and amount spent for each member before they became a member?
 #### Answer:
 ```sql
 SELECT s.customer_id, COUNT(me.product_name) AS total_items, SUM(me.price) AS amount_spent
@@ -256,6 +262,8 @@ ORDER BY s.customer_id;
 | ----------- | ----------- | ------------ |
 | A           | 2           | 25           |
 | B           | 3           | 40           |
+
+Before becoming members, A spent a total of 25$ on 2 items, while B spent a total of 40$ on 3 items.
 
 ***
 ## Question 9
@@ -277,6 +285,8 @@ GROUP BY s.customer_id;
 | A           | 860    |
 | B           | 940    |
 | C           | 360    |
+
+A would have 860 points, B would have 940 points and C would have 360 points in total.
 
 ***
 ## Question 10
@@ -302,6 +312,90 @@ ORDER BY s.customer_id;
 | A           | 1370   |
 | B           | 820    |
 
+Taking into account all past purchase history until the end of January 2021, A's points would be 1370, and B's points would 820.
+
 ***
 ## Bonus Questions
+### Join All The Things
+#### Recreate the following table output using the available data:
+| customer_id | order_date | product_name | price | member |
+| ----------- | ---------- | ------------ | ----- | ------ |
+| A           | 2021-01-01 | curry        | 15    | N      |
+| A           | 2021-01-01 | sushi        | 10    | N      |
+| A           | 2021-01-07 | curry        | 15    | Y      |
+| A           | 2021-01-10 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| B           | 2021-01-01 | curry        | 15    | N      |
+| B           | 2021-01-02 | curry        | 15    | N      |
+| B           | 2021-01-04 | sushi        | 10    | N      |
+| B           | 2021-01-11 | sushi        | 10    | Y      |
+| B           | 2021-01-16 | ramen        | 12    | Y      |
+| B           | 2021-02-01 | ramen        | 12    | Y      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-07 | ramen        | 12    | N      |
+
+#### Answer:
+```sql
+SELECT s.customer_id,
+	s.order_date,
+	me.product_name,
+	me.price,
+	CASE
+		WHEN s.order_date >= m.join_date THEN "Y"
+        	ELSE "N"
+	END AS member
+FROM dannys_diner.sales s
+LEFT JOIN dannys_diner.members m
+	ON s.customer_id = m.customer_id
+INNER JOIN dannys_diner.menu me
+	ON s.product_id = me.product_id
+ORDER BY s.customer_id, s.order_date, me.product_name;
+```
+
+### Rank All The Things
+#### Danny also requires further information about the ranking of customer products, but he does not need the ranking for non-member purchases.
+| customer_id | order_date | product_name | price | member | ranking |
+| ----------- | ---------- | ------------ | ----- | ------ | ------- |
+| A           | 2021-01-01 | curry        | 15    | N      | null        |
+| A           | 2021-01-01 | sushi        | 10    | N      | null        |
+| A           | 2021-01-07 | curry        | 15    | Y      | 1       |
+| A           | 2021-01-10 | ramen        | 12    | Y      | 2       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| B           | 2021-01-01 | curry        | 15    | N      | null        |
+| B           | 2021-01-02 | curry        | 15    | N      | null        |
+| B           | 2021-01-04 | sushi        | 10    | N      | null        |
+| B           | 2021-01-11 | sushi        | 10    | Y      | 1       |
+| B           | 2021-01-16 | ramen        | 12    | Y      | 2       |
+| B           | 2021-02-01 | ramen        | 12    | Y      | 3       |
+| C           | 2021-01-01 | ramen        | 12    | N      | null        |
+| C           | 2021-01-01 | ramen        | 12    | N      | null        |
+| C           | 2021-01-07 | ramen        | 12    | N      | null        |
+
+```sql
+SELECT s.customer_id,
+	s.order_date,
+	me.product_name,
+	me.price,
+	CASE
+		WHEN s.order_date >= m.join_date THEN "Y"
+        	ELSE "N"
+	END AS member,
+    	CASE 
+    		WHEN s.order_date >= m.join_date
+			THEN
+				DENSE_RANK() OVER
+					(PARTITION BY s.customer_id,
+						CASE WHEN s.order_date >= m.join_date THEN 0 ELSE 1 END
+					ORDER BY s.order_date)
+	END AS ranking
+FROM dannys_diner.sales s
+LEFT JOIN dannys_diner.members m
+	ON s.customer_id = m.customer_id
+INNER JOIN dannys_diner.menu me
+	ON s.product_id = me.product_id
+ORDER BY s.customer_id, s.order_date, me.product_name;
+```
 
