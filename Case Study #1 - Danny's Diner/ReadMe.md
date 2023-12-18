@@ -374,6 +374,7 @@ ORDER BY s.customer_id, s.order_date, me.product_name;
 | C           | 2021-01-01 | ramen        | 12    | N      | null        |
 | C           | 2021-01-07 | ramen        | 12    | N      | null        |
 
+#### Answer:
 ```sql
 SELECT s.customer_id,
 	s.order_date,
