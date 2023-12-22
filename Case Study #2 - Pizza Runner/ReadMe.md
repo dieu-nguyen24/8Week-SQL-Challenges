@@ -46,4 +46,31 @@ SELECT * FROM customer_orders_temp;
 | 10       | 104         | 1        |            |        | 2020-01-11T18:34:49.000Z |
 | 10       | 104         | 1        | 2, 6       | 1, 4   | 2020-01-11T18:34:49.000Z |
 
+```sql
+CREATE TEMP TABLE runner_orders_temp AS
+SELECT order_id, 
+		runner_id, 
+        CASE 
+        	WHEN pickup_time LIKE 'null' THEN '' 
+        	ELSE pickup_time
+        END AS pickup_time,
+        CASE
+		WHEN distance LIKE '%km%' THEN REPLACE(distance, 'km', '')
+		WHEN distance LIKE 'null' THEN ''
+		ELSE distance
+         END AS distance,
+         CASE
+        	WHEN duration LIKE '%min%' THEN REGEXP_REPLACE(duration, '[^\d]', '', 'g')
+            	WHEN duration LIKE 'null' THEN ''
+            	ELSE duration
+         END AS duration,
+         CASE 
+         	WHEN cancellation IS NULL OR cancellation LIKE 'null' THEN ''
+         	ELSE cancellation
+         END AS cancellation
+FROM pizza_runner.runner_orders;
+
+SELECT * FROM runner_orders_temp;
+```
+
 
